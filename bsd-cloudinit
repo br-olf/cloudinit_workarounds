@@ -1,0 +1,39 @@
+#!/bin/csh
+#bsd-cloudinit workaround
+
+#usage
+#echo /root/bsd-cloudinit >> /etc/rc.local
+#chmod u+x /root/bsd-cloudinit
+
+set PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
+export $PATH
+
+#disk_resize
+gpart recover vtbd0
+gpart resize -i 2 vtbd0
+growfs -y vtbd0p2
+
+#set passwordless sudo
+echo 'freebsd ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/10-cloudinit
+
+#set_key
+fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | jq -r '.keys[] |.data' > /home/freebsd/.ssh/authorized_keys
+
+#set_hostname
+set fqdn=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | jq '.hostname' | sed 's/.novalocal//g'`
+sed -i "" "s/hostname.*/hostname=$fqdn/g" /etc/rc.conf
+hostname `echo $fqdn | tr -d '"'`
+
+#set root passwd
+pw mod user root -w random > /dev/null
+
+#run userdata
+fetch http://169.254.169.254/latest/user-data -q -o - | sh
+
+#make clean
+set history = 0
+ssh-keygen -A
+
+#do Cheshire Cat
+sed -i "" "s/.*bsd-cloudinit//g" /etc/rc.local
+rm -f /root/bsd-cloudinit
