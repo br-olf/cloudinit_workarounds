@@ -1,9 +1,9 @@
 #!/bin/csh
-#bsd-cloudinit workaround
+#opnsense-cloudinit workaround
 
 #usage
-#echo /root/bsd-cloudinit >> /etc/rc.local
-#chmod u+x /root/bsd-cloudinit
+#echo /root/opnsense-cloudinit >> /etc/rc.local
+#chmod u+x /root/opnsense-cloudinit
 
 set PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
 export $PATH
@@ -42,5 +42,5 @@ set history = 0
 ssh-keygen -A
 
 #do Cheshire Cat
-sed -i "" "s/.*bsd-cloudinit//g" /etc/rc.local
-rm -f /root/bsd-cloudinit
+sed -i "" "s/.*opnsense-cloudinit//g" /etc/rc.local
+rm -f /root/opnsense-cloudinit
