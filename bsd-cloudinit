@@ -13,6 +13,10 @@ gpart recover vtbd0
 gpart resize -i 2 vtbd0
 growfs -y vtbd0p2
 
+#install needed packages
+export ASSUME_ALWAYS_YES=yes
+pkg install sudo jq
+
 #create freebsd user
 pw useradd -n freebsd || true
 
