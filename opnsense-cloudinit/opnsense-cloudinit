@@ -5,7 +5,7 @@
 #echo /root/opnsense-cloudinit/opnsense-cloudinit > /usr/local/etc/rc.syshook.d/start/99-cloudinit
 #chmod +x /usr/local/etc/rc.syshook.d/start/99-cloudinit 
 
-set PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
+set PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin
 export $PATH
 
 #disk_resize
@@ -26,14 +26,21 @@ sed -i '' -e "s/<hostname>.*<\/hostname>/<hostname>$fqdn<\/hostname>/g" /conf/co
 #run userdata
 fetch http://169.254.169.254/latest/user-data -q -o - | sh
 
-#make clean
-set history = 0
 #force ssh host key regeneration
 rm -f /conf/sshd/ssh_host*
 
 #remove opnsense-cloudinit
-rm -f "/usr/local/etc/rc.syshook.d/start/99-cloudinit"
-rm -f -r /root/opnsense-cloudinit
+rm -f /usr/local/etc/rc.syshook.d/start/99-cloudinit
+rm -rf /root/opnsense-cloudinit
+
+#sync the harddrive
+sync
+
+#sleep to make shure everything is done
+sleep 1
+
+#make clean
+set history = 0
 
 #do reboot
 reboot
