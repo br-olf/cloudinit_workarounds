@@ -13,9 +13,6 @@ gpart recover vtbd0
 gpart resize -i 2 vtbd0
 growfs -y vtbd0p2
 
-#set passwordless sudo
-echo 'freebsd ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/10-cloudinit
-
 #set_key
 sshkey=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | jq -r '.keys[] |.data' | base64`
 
