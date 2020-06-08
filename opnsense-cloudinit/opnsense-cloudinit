@@ -13,13 +13,6 @@ gpart recover vtbd0
 gpart resize -i 2 vtbd0
 growfs -y vtbd0p2
 
-#create freebsd user
-pw useradd -n freebsd || true
-
-#create home directory and .ssh
-mkdir -p /home/freebsd/.ssh/
-chown -R freebsd:freebsd /home/freebsd
-
 #set passwordless sudo
 echo 'freebsd ALL=(ALL) NOPASSWD: ALL' > /usr/local/etc/sudoers.d/10-cloudinit
 
