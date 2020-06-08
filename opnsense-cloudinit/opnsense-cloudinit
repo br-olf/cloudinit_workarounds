@@ -2,8 +2,8 @@
 #opnsense-cloudinit workaround
 
 #usage
-#echo /root/opnsense-cloudinit >> /etc/rc.local
-#chmod u+x /root/opnsense-cloudinit
+#echo /root/opnsense-cloudinit/opnsense-cloudinit > /usr/local/etc/rc.syshook.d/start/99-cloudinit
+#chmod +x /usr/local/etc/rc.syshook.d/start/99-cloudinit 
 
 set PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin
 export $PATH
@@ -30,6 +30,9 @@ fetch http://169.254.169.254/latest/user-data -q -o - | sh
 set history = 0
 ssh-keygen -A
 
-#do Cheshire Cat
-sed -i "" "s/.*opnsense-cloudinit//g" /etc/rc.local
-rm -f /root/opnsense-cloudinit
+#remove opnsense-cloudinit
+rm -f "/usr/local/etc/rc.syshook.d/start/99-cloudinit"
+rm -f -r /root/opnsense-cloudinit
+
+#do reboot
+reboot
