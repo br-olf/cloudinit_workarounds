@@ -24,9 +24,6 @@ set fqdn=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - |
 sed -i "" "s/hostname.*/hostname=$fqdn/g" /etc/rc.conf
 hostname `echo $fqdn | tr -d '"'`
 
-#set root passwd
-pw mod user root -w random > /dev/null
-
 #run userdata
 fetch http://169.254.169.254/latest/user-data -q -o - | sh
 
