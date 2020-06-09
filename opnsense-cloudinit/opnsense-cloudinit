@@ -14,8 +14,10 @@ gpart resize -i 2 vtbd0
 growfs -y vtbd0p2
 
 #set_key
-set sshkey=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | /root/opnsense-cloudinit/jq -r '.keys[] |.data' | /root/opnsense-cloudinit/base64 | sed 's/ //g`
-sed -i '' -e "s/<authorizedkeys>.*<\/authorizedkeys>/<authorizedkeys>$sshkey<\/authorizedkeys>/g" /conf/config.xml
+set sshkey=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | /root/opnsense-cloudinit/jq -r '.keys[] |.data'`
+echo -n $sshkey > /home/opnsense/.ssh/authorized_keys
+set sshkeyconf=`echo -n $sshkey | /root/opnsense-cloudinit/base64 | xargs | sed 's/[[:space:]]//g'`
+sed -i '' -e "s/<authorizedkeys>.*<\/authorizedkeys>/<authorizedkeys>$sshkeyconf<\/authorizedkeys>/g" /conf/config.xml
 
 #set_hostname
 set fqdn=`fetch http://169.254.169.254/openstack/latest/meta_data.json -q -o - | /root/opnsense-cloudinit/jq '.hostname' | sed 's/.novalocal//g'`
@@ -33,7 +35,7 @@ rm -f /conf/sshd/ssh_host*
 rm -f /usr/local/etc/rc.syshook.d/start/99-cloudinit
 rm -rf /root/opnsense-cloudinit
 
-#sync the harddrive
+#sync the hard disk
 sync
 
 #sleep to make shure everything is done
